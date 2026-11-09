@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Base64;
 
 @Service
-public class JwtService {
+public final class JwtService {
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
     private final String issuer;
