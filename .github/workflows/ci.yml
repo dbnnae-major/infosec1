@@ -1,3 +1,4 @@
+
 name: Security CI
 
 on:
@@ -11,19 +12,27 @@ jobs:
   tests-and-sast:
     name: Tests + SAST (SpotBugs)
     runs-on: ubuntu-latest
+
     steps:
+      - name: Configure Git
+        run: git config --global init.defaultBranch main
+
       - name: Checkout
         uses: actions/checkout@v7
+
       - name: Set up JDK 21
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
+
       - name: Run API integration tests
         run: bash ./mvnw -B -ntp clean verify
+
       - name: Run SpotBugs and fail on findings
         run: bash ./mvnw -B -ntp spotbugs:spotbugs spotbugs:check
+
       - name: Upload SAST report
         if: always()
         uses: actions/upload-artifact@v7
@@ -37,28 +46,37 @@ jobs:
   sca:
     name: SCA (OWASP Dependency-Check)
     runs-on: ubuntu-latest
+
     env:
-      MAVEN_OPTS: --enable-native-access=ALL-UNNAMED
+      JAVA_TOOL_OPTIONS: --enable-native-access=ALL-UNNAMED
+
     steps:
+      - name: Configure Git
+        run: git config --global init.defaultBranch main
+
       - name: Checkout
         uses: actions/checkout@v7
+
       - name: Set up JDK 21
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
-          cache: maven
+
       - name: Cache NVD vulnerability database
         uses: actions/cache@v6
         with:
           path: ~/.m2/odc-data
           key: odc-nvd-${{ runner.os }}-v1
+
       - name: Compile project
         run: bash ./mvnw -B -ntp -DskipTests package
-      - name: Scan third-party libraries (CVSS >= 9 fails)
+
+      - name: Scan third-party libraries
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: bash ./mvnw -B -ntp dependency-check:check
+
       - name: Upload SCA report
         if: always()
         uses: actions/upload-artifact@v7
