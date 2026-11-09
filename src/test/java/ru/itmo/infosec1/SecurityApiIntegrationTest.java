@@ -2,11 +2,11 @@ package ru.itmo.infosec1;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +36,7 @@ class SecurityApiIntegrationTest {
     private static final String TEST_SECRET = "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=";
 
     @Autowired MockMvc mvc;
-    @Autowired ObjectMapper json;
+    @Autowired JsonMapper json;
     @Autowired UserRepository users;
     @Autowired PasswordEncoder passwords;
 
@@ -63,7 +63,7 @@ class SecurityApiIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.type").value("Bearer"))
                 .andReturn().getResponse().getContentAsString();
-        return json.readTree(response).get("token").asText();
+        return json.readTree(response).get("token").asString();
     }
 
     @Test
