@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: infosec1
+  datasource:
+    url: 'jdbc:h2:file:./data/infosec1;DB_CLOSE_ON_EXIT=FALSE'
+    username: sa
+    password: ''
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+server:
+  address: 127.0.0.1
+  port: 8080
+app:
+  jwt:
+    issuer: infosec1
+    lifetime-seconds: 3600
+    secret-base64: ${JWT_SECRET_BASE64}

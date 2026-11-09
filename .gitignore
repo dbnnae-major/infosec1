@@ -1,0 +1,22 @@
+# Java / Maven
+/target/
+*.class
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# Local database
+/data/
+*.mv.db
+*.trace.db
+
+# Secrets / IDE
+.env
+.env.*
+!.env.example
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# OS
+Thumbs.db
